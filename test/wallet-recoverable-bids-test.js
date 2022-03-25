@@ -25,18 +25,35 @@ describe('Recoverable bids', function() {
     await wdb.close();
   });
 
+  function getMetaAcctPub(wallet) {
+    const type = wallet.network.keyPrefix.coinType;
+    // Ledger wallet can do this.
+    const metaAccount = wallet.master.key.deriveAccount(
+      44,
+      type,
+      0xffffffff // could also be 0x7fffffff, deriveAccount() enforces hardening
+    );
+    return metaAccount.toPublic();
+  }
+
   async function getRecoverableBidKey(nameHash, height, address) {
     const path = await wallet.getPath(address.hash);
 
     if (!path)
       throw new Error('Account not found.');
 
-    const account = await wallet.getAccount(path.account);
+    // Get the meta account key from wallet.
+    // This may require a passphrase to derive, but
+    // once we have the extended public key we don't
+    // need the wallet anymore.
+    const metaAcctPub = getMetaAcctPub(wallet);
+    // Meta purpose (HIP-8)
+    const metaPurpose = metaAcctPub.derive(0x00000008);
+    // Corresponding wallet account
+    const metaWalletAccount = metaPurpose.derive(path.account);
 
-    if (!account)
-      throw new Error('Account not found.');
-
-    let publicKey = account.accountKey;
+    // Now derive the HIP-8 key for this particular BID
+    let publicKey = metaWalletAccount;
     for (let offset = 0; offset < nameHash.length; offset += 4) {
       let index = nameHash.slice(offset, offset + 4);
       index = index.readUInt32BE();
@@ -89,7 +106,7 @@ describe('Recoverable bids', function() {
     return valueFromBuffer(valBuf);
   }
 
-  it('should encrypt & decrpyt value', async () => {
+  it('should encrypt & decrypt value', async () => {
     const name = 'handsome';
     const height = 10000;
     const nameHash = rules.hashName(name);
