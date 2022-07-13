@@ -1,7 +1,3 @@
-/* eslint-env mocha */
-/* eslint prefer-arrow-callback: "off" */
-/* eslint no-return-assign: "off" */
-
 'use strict';
 
 const assert = require('bsert');
@@ -16,7 +12,7 @@ const rules = require('../lib/covenants/rules');
 const Address = require('../lib/primitives/address');
 
 const network = Network.get('regtest');
-const NAME1 = rules.grindName(5, 2, network);
+const NAME1 = rules.grindName(10, 2, network);
 const {
   treeInterval,
   biddingPeriod,
@@ -24,7 +20,8 @@ const {
 } = network.names;
 
 const workers = new WorkerPool({
-  enabled: false
+  enabled: false,
+  size: 2
 });
 
 const blocks = new BlockStore({

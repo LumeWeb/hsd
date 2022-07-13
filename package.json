@@ -1,6 +1,6 @@
 {
   "name": "hsd",
-  "version": "3.0.0",
+  "version": "4.99.0",
   "description": "Cryptocurrency bike-shed",
   "license": "MIT",
   "repository": "git://github.com/handshake-org/hsd.git",
@@ -17,7 +17,7 @@
     "wallet"
   ],
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=12.0.0"
   },
   "dependencies": {
     "bcfg": "~0.1.7",
@@ -28,7 +28,7 @@
     "bfile": "~0.2.2",
     "bfilter": "~1.0.5",
     "bheep": "~0.1.5",
-    "binet": "~0.3.6",
+    "binet": "~0.3.7",
     "blgr": "~0.2.0",
     "blru": "~0.1.6",
     "blst": "~0.1.5",
@@ -44,9 +44,9 @@
     "bval": "~0.1.6",
     "bweb": "~0.1.10",
     "goosig": "~0.10.0",
-    "hs-client": "~0.0.10",
+    "hs-client": "~0.0.11",
     "n64": "~0.2.10",
-    "urkel": "~0.7.0"
+    "urkel": "~1.0.2"
   },
   "devDependencies": {
     "bmocha": "^2.1.5"
@@ -73,7 +73,6 @@
   },
   "browser": {
     "./lib/covenants/reserved": "./lib/covenants/reserved-browser.js",
-    "./lib/dns/icann": "./lib/dns/icann-browser.js",
     "./lib/hd/nfkd": "./lib/hd/nfkd-compat.js",
     "./lib/hd/wordlist": "./lib/hd/wordlist-browser.js",
     "./lib/workers/child": "./lib/workers/child-browser.js",

@@ -1,13 +1,3 @@
-/*!
- * test/wallet-http-test.js - test for wallet http endoints
- * Copyright (c) 2019, Mark Tyneway (MIT License).
- * https://github.com/handshake-org/hsd
- */
-
-/* eslint-env mocha */
-/* eslint prefer-arrow-callback: "off" */
-/* eslint no-return-assign: "off" */
-
 'use strict';
 
 const {NodeClient, WalletClient} = require('hs-client');
@@ -290,7 +280,7 @@ describe('Wallet HTTP', function() {
     });
 
     // wait for tx event on mempool
-    await common.event(node.mempool, 'tx');
+    await common.forEvent(node.mempool, 'tx');
 
     const mempool = await nclient.getMempool();
 

@@ -1,6 +1,3 @@
-/* eslint-env mocha */
-/* eslint prefer-arrow-callback: "off" */
-
 'use strict';
 
 const assert = require('bsert');
@@ -17,7 +14,7 @@ class TestUtil {
       options = Object.create(null);
 
     if (!options.host)
-      options.host = 'localhost';
+      options.host = '127.0.0.1';
 
     if (!options.nport)
       options.nport = 14037;
@@ -139,11 +136,13 @@ class TestUtil {
   }
 }
 
+const GNAME_SIZE = 10;
+
 describe('Auction RPCs', function() {
   this.timeout(60000);
 
   const util = new TestUtil();
-  const name = rules.grindName(2, 0, Network.get('regtest'));
+  const name = rules.grindName(GNAME_SIZE, 0, Network.get('regtest'));
   let winner, loser;
   const winnerBid = {
     bid: 5,

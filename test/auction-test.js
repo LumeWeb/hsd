@@ -1,7 +1,3 @@
-/* eslint-env mocha */
-/* eslint prefer-arrow-callback: "off" */
-/* eslint no-return-assign: "off" */
-
 'use strict';
 
 const assert = require('bsert');
@@ -15,12 +11,14 @@ const rules = require('../lib/covenants/rules');
 const ownership = require('../lib/covenants/ownership');
 
 const network = Network.get('regtest');
-const NAME1 = rules.grindName(10, 20, network);
-const NAME2 = rules.grindName(10, 20, network);
+const GNAME_SIZE = 10;
+const NAME1 = rules.grindName(GNAME_SIZE, 20, network);
+const NAME2 = rules.grindName(GNAME_SIZE, 20, network);
 
 const workers = new WorkerPool({
   // Must be disabled for `ownership.ignore`.
-  enabled: false
+  enabled: false,
+  size: 2
 });
 
 function createNode() {

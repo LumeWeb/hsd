@@ -1,7 +1,3 @@
-/* eslint-env mocha */
-/* eslint prefer-arrow-callback: "off" */
-/* eslint no-return-assign: "off" */
-
 'use strict';
 
 const fs = require('fs');
@@ -18,7 +14,8 @@ const AirdropProof = require('../lib/primitives/airdropproof');
 const network = Network.get('regtest');
 
 const workers = new WorkerPool({
-  enabled: false
+  enabled: false,
+  size: 2
 });
 
 const AIRDROP_PROOF_FILE = resolve(__dirname, 'data', 'airdrop-proof.base64');

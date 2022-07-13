@@ -1,7 +1,3 @@
-/* eslint-env mocha */
-/* eslint prefer-arrow-callback: "off" */
-/* eslint no-implicit-coercion: "off" */
-
 'use strict';
 
 const assert = require('bsert');
@@ -49,6 +45,7 @@ async function mineBlocks(n, addr) {
 }
 
 describe('Reserved Name Claims', function() {
+  this.timeout(10000);
   before(async () => {
     await node.open();
 

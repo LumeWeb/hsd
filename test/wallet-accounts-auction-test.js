@@ -1,6 +1,3 @@
-/* eslint-env mocha */
-/* eslint prefer-arrow-callback: "off" */
-
 'use strict';
 
 const assert = require('bsert');
@@ -30,7 +27,7 @@ const wclient = new WalletClient({
 
 const {wdb} = node.require('walletdb');
 
-const name = rules.grindName(5, 1, network);
+const name = rules.grindName(10, 1, network);
 let wallet, alice, bob, aliceReceive, bobReceive;
 
 async function mineBlocks(n, addr) {

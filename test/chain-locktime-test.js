@@ -1,6 +1,3 @@
-/* eslint-env mocha */
-/* eslint prefer-arrow-callback: "off" */
-
 'use strict';
 
 const assert = require('bsert');
@@ -72,6 +69,17 @@ describe('Chain Timelocks', function() {
   });
 
   describe('Relative (CSV)', function() {
+    let timeOffset;
+
+    // make sure we recover proper regtest Network.
+    before(() => {
+      timeOffset = network.time.offset;
+    });
+
+    after(() => {
+      network.time.offset = timeOffset;
+    });
+
     // Relative timelock by height
     const csvHeightScript = new Script([
       Opcode.fromInt(2),

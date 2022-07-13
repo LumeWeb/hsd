@@ -1,12 +1,3 @@
-/**
- * test/node-rpc-test.js - Node RPC tests for hsd
- * Copyright (c) 2020, The Handshake Developers (MIT Licence)
- * https://github.com/handshake-org/hsd
- */
-
-/* eslint-env mocha */
-/* eslint prefer-arrow-callback: "off" */
-
 'use strict';
 
 const assert = require('bsert');
@@ -46,7 +37,7 @@ const clientOptions = {
 };
 
 const errs = {
-  MISC_ERROR: -1 >>> 0
+  MISC_ERROR: -1
 };
 
 describe('RPC', function() {
@@ -624,6 +615,65 @@ describe('RPC', function() {
       const result = await nclient.execute('getnetworkinfo', []);
 
       assert.deepEqual(result.localservicenames, ['NETWORK', 'BLOOM']);
+    });
+  });
+
+  describe('utility', function() {
+    const node = new FullNode({...nodeOptions});
+    const nclient = new NodeClient(clientOptions);
+
+    before(async () => {
+      await node.open();
+      await nclient.open();
+    });
+
+    after(async () => {
+      await nclient.close();
+      await node.close();
+    });
+
+    it('should decode resource', async () => {
+      // .p resource at mainnet height 118700
+      const result = await nclient.execute(
+        'decoderesource',
+        [
+          '0002036e733101700022858d9e01c00200c625080220d96' +
+          '65e9952988fc27b1d4098491b37d83a3b6fb2cdf5fc9787' +
+          'd4dda67f1408ed001383080220ae8ea2f2800727f9ad3b6' +
+          'd7c802dac2a0790bdc8ea717bf5f6dc21f83fb8cc4e'
+        ]
+      );
+
+      assert.deepEqual(
+        result,
+        {
+          records: [
+            {
+              type: 'GLUE4',
+              ns: 'ns1.p.',
+              address: '34.133.141.158'
+            },
+            {
+              type: 'NS',
+              ns: 'ns1.p.'
+            },
+            {
+              type: 'DS',
+              keyTag: 50725,
+              algorithm: 8,
+              digestType: 2,
+              digest: 'd9665e9952988fc27b1d4098491b37d83a3b6fb2cdf5fc9787d4dda67f1408ed'
+            },
+            {
+              type: 'DS',
+              keyTag: 4995,
+              algorithm: 8,
+              digestType: 2,
+              digest: 'ae8ea2f2800727f9ad3b6d7c802dac2a0790bdc8ea717bf5f6dc21f83fb8cc4e'
+            }
+          ]
+        }
+      );
     });
   });
 });

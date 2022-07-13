@@ -1,6 +1,3 @@
-/* eslint-env mocha */
-/* eslint prefer-arrow-callback: "off" */
-
 'use strict';
 
 const assert = require('bsert');
@@ -45,6 +42,8 @@ const cpu = miner.cpu;
 const wallet = new MemWallet({
   network
 });
+
+const GNAME_SIZE = 10;
 
 wallet.getNameStatus = async (nameHash) => {
   assert(Buffer.isBuffer(nameHash));
@@ -158,11 +157,11 @@ describe('Checkpoints', function() {
 
   it('should win names in auction', async () => {
     // Only one bid, 0-value name
-    const name1 = rules.grindName(5, chainGenerator.height - 5, network);
+    const name1 = rules.grindName(GNAME_SIZE, chainGenerator.height - 5, network);
     // Two bids, name will have a value
-    const name2 = rules.grindName(5, chainGenerator.height - 5, network);
+    const name2 = rules.grindName(GNAME_SIZE, chainGenerator.height - 5, network);
     // Two bids, but wallet will not REGISTER
-    const name3 = rules.grindName(5, chainGenerator.height - 5, network);
+    const name3 = rules.grindName(GNAME_SIZE, chainGenerator.height - 5, network);
 
     const open1 = await wallet.sendOpen(name1);
     const open2 = await wallet.sendOpen(name2);
@@ -221,7 +220,7 @@ describe('Checkpoints', function() {
   });
 
   it('should bid in multiple blocks', async () => {
-    const name = rules.grindName(5, chainGenerator.height - 5, network);
+    const name = rules.grindName(GNAME_SIZE, chainGenerator.height - 5, network);
 
     const open = await wallet.sendOpen(name);
 
@@ -369,7 +368,7 @@ describe('Checkpoints', function() {
       let invalidBlockEntry;
 
       before(async () => {
-        name = rules.grindName(5, chainGenerator.height - 5, network);
+        name = rules.grindName(GNAME_SIZE, chainGenerator.height - 5, network);
       });
 
       after(async () => {

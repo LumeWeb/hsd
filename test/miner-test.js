@@ -1,5 +1,3 @@
-/* eslint-env mocha */
-
 'use strict';
 
 const assert = require('bsert');
@@ -15,7 +13,8 @@ const MemWallet = require('./util/memwallet');
 const {BufferSet} = require('buffer-map');
 
 const workers = new WorkerPool({
-  enabled: true
+  enabled: true,
+  size: 2
 });
 
 const blocks = new BlockStore({

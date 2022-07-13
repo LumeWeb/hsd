@@ -1,13 +1,3 @@
-/**
- * test/blockstore-test.js - blockstore test for hsd
- * Copyright (c) 2019, Braydon Fuller (MIT License).
- * Copyright (c) 2019, Mark Tyneway (MIT License).
- * https://github.com/handshake-org/hsd
- */
-
-/* eslint-env mocha */
-/* eslint prefer-arrow-callback: "off" */
-
 'use strict';
 
 const Logger = require('blgr');
@@ -1454,7 +1444,7 @@ describe('BlockStore', function() {
           const block = await store.readBlock(hash);
           assert(!block, 'Block should not exist');
         }
-        await batch.write();
+        await batch.commit();
 
         const block2 = await store.readBlock(hash);
         assert.bufferEqual(block1, block2);
@@ -1471,7 +1461,7 @@ describe('BlockStore', function() {
           const undo = await store.readUndo(hash);
           assert(!undo, 'Block should not exist');
         }
-        await batch.write();
+        await batch.commit();
 
         const undo2 = await store.readUndo(hash);
         assert.bufferEqual(undo1, undo2);
@@ -1488,7 +1478,7 @@ describe('BlockStore', function() {
           const merkle = await store.readMerkle(hash);
           assert(!merkle, 'Block should not exist');
         }
-        await batch.write();
+        await batch.commit();
 
         const merkle2 = await store.readMerkle(hash);
         assert.bufferEqual(merkle1, merkle2);
@@ -1514,7 +1504,7 @@ describe('BlockStore', function() {
           assert(!block);
         }
 
-        await batch.write();
+        await batch.commit();
 
         for (const {hash, block} of blocks) {
           const hasBlock = await store.hasBlock(hash);
@@ -1536,7 +1526,7 @@ describe('BlockStore', function() {
           batch1.writeBlock(hash, block);
         }
 
-        await batch1.write();
+        await batch1.commit();
 
         for (const hash of hashes) {
           const hasBlock = await store.hasBlock(hash);
@@ -1547,7 +1537,7 @@ describe('BlockStore', function() {
         for (const hash of hashes)
           batch2.pruneBlock(hash);
 
-        await batch2.write();
+        await batch2.commit();
 
         for (const hash of hashes) {
           const hasBlock = await store.hasBlock(hash);
@@ -1566,7 +1556,7 @@ describe('BlockStore', function() {
           batch1.writeUndo(hash, block);
         }
 
-        await batch1.write();
+        await batch1.commit();
 
         for (const hash of hashes) {
           const hasBlock = await store.hasUndo(hash);
@@ -1577,7 +1567,7 @@ describe('BlockStore', function() {
         for (const hash of hashes)
           batch2.pruneUndo(hash);
 
-        await batch2.write();
+        await batch2.commit();
 
         for (const hash of hashes) {
           const hasBlock = await store.hasUndo(hash);
@@ -1596,7 +1586,7 @@ describe('BlockStore', function() {
           batch1.writeMerkle(hash, block);
         }
 
-        await batch1.write();
+        await batch1.commit();
 
         for (const hash of hashes) {
           const hasBlock = await store.hasMerkle(hash);
@@ -1607,7 +1597,7 @@ describe('BlockStore', function() {
         for (const hash of hashes)
           batch2.pruneMerkle(hash);
 
-        await batch2.write();
+        await batch2.commit();
 
         for (const hash of hashes) {
           const hasBlock = await store.hasMerkle(hash);
@@ -1640,7 +1630,7 @@ describe('BlockStore', function() {
         };
 
         await checkBlocks();
-        await batch.write();
+        await batch.commit();
         await checkBlocks();
       });
 
@@ -1652,14 +1642,14 @@ describe('BlockStore', function() {
 
         batch.writeBlock(hash, block);
 
-        await batch.write();
+        await batch.commit();
 
-        await assert.rejects(() => batch.write(), {
-          message: 'Already written.'
+        await assert.rejects(() => batch.commit(), {
+          message: 'Already written all.'
         });
 
         await assert.rejects(() => batch.clear(), {
-          message: 'Already written.'
+          message: 'Already written all.'
         });
       });
     });
@@ -1701,7 +1691,7 @@ describe('BlockStore', function() {
         batch.writeBlock(hash, block);
       }
 
-      await batch.write();
+      await batch.commit();
 
       for (const {hash, block} of blocks) {
         const block2 = await store.readBlock(hash);
@@ -1738,7 +1728,7 @@ describe('BlockStore', function() {
         batch.writeUndo(hash, undo);
       }
 
-      await batch.write();
+      await batch.commit();
 
       for (const {hash, undo} of undos) {
         const undo2 = await store.readUndo(hash);
@@ -1772,7 +1762,7 @@ describe('BlockStore', function() {
         batch.writeMerkle(hash, merkle);
       }
 
-      await batch.write();
+      await batch.commit();
 
       for (const {hash, merkle} of merkles) {
         const merkle2 = await store.readMerkle(hash);
@@ -1805,7 +1795,7 @@ describe('BlockStore', function() {
         batch1.writeBlock(hash, block);
       }
 
-      await batch1.write();
+      await batch1.commit();
 
       const first = await fs.stat(store.filepath(types.BLOCK, 0));
       const second = await fs.stat(store.filepath(types.BLOCK, 1));
@@ -1820,7 +1810,7 @@ describe('BlockStore', function() {
       for (const hash of hashes)
         batch2.pruneBlock(hash);
 
-      await batch2.write();
+      await batch2.commit();
 
       assert.equal(await fs.exists(store.filepath(types.BLOCK, 0)), false);
       assert.equal(await fs.exists(store.filepath(types.BLOCK, 1)), false);
